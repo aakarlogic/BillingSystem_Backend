@@ -1,0 +1,64 @@
+# Pavti API settings. Every value can be overridden by an environment variable
+# (e.g. PAVTI_DB_PASSWORD) so passwords never need to be committed.
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: pavti-api
+  config:
+    # your own passwords for running on this computer (IntelliJ / mvnw).
+    # Copy local.yml.example to local.yml and fill it in. local.yml is never committed.
+    import: optional:file:./local.yml
+  datasource:
+    # connectionTimeZone=UTC: all DATETIME columns are stored in UTC
+    url: jdbc:mysql://${PAVTI_DB_HOST:localhost}:${PAVTI_DB_PORT:3306}/${PAVTI_DB_NAME:pavti}?createDatabaseIfNotExist=true&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${PAVTI_DB_USER:pavti_app}
+    password: ${PAVTI_DB_PASSWORD:}
+    hikari:
+      maximum-pool-size: 10
+  flyway:
+    # creates tables + stored procedures from src/main/resources/db/migration
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: always
+    deserialization:
+      fail-on-unknown-properties: false
+
+pavti:
+  jwt:
+    # at least 32 characters; set PAVTI_JWT_SECRET in production
+    secret: ${PAVTI_JWT_SECRET:change-me-this-is-only-for-local-development-1234567890}
+    issuer: pavti-api
+    access-token-minutes: ${PAVTI_ACCESS_MINUTES:720}   # 12 h = one restaurant shift
+    refresh-token-days: ${PAVTI_REFRESH_DAYS:30}
+  otp:
+    minutes-valid: 5
+    max-attempts: 3
+    # dev-mode: OTP is printed in the log and returned in the response (no SMS needed)
+    dev-mode: ${PAVTI_OTP_DEV_MODE:true}
+  cors:
+    allowed-origins: ${PAVTI_CORS_ORIGINS:http://localhost:5173,http://localhost:5180,http://localhost:5181}
+  crypto:
+    # Every request/response body is encrypted (RSA-OAEP-SHA256 + AES-256-GCM), like Health 360.
+    # Which APIs: every controller marked @ValidateEncryptedRequest (all of them).
+    # off = no encryption | optional = accept encrypted and plain (Swagger works) | required = plain calls refused
+    mode: ${PAVTI_CRYPTO_MODE:optional}
+    # private key as PEM text (PKCS#8, "BEGIN PRIVATE KEY"). Empty = use / create the key file below.
+    private-key: ${PAVTI_RSA_PRIVATE_KEY:}
+    key-file: ${PAVTI_RSA_KEY_FILE:keys/pavti_rsa_private.pem}
+  bootstrap:
+    # first platform admin, created at start-up if no platform admin exists yet
+    admin-mobile: ${PAVTI_ADMIN_MOBILE:9000000000}
+    admin-name: ${PAVTI_ADMIN_NAME:Platform Admin}
+    admin-password: ${PAVTI_ADMIN_PASSWORD:}
+  demo-data: ${PAVTI_DEMO_DATA:false}   # true = create the Spice Garden Cafe demo restaurant
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.pavti: INFO

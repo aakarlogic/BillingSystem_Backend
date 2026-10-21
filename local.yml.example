@@ -1,0 +1,13 @@
+# Copy this file to local.yml (same folder as pom.xml) and fill in your values.
+# local.yml is in .gitignore, so your passwords never go to git.
+spring:
+  datasource:
+    # localhost:3306 is your MySQL. The "pavti" database is created by itself on first start.
+    url: jdbc:mysql://localhost:3306/pavti?createDatabaseIfNotExist=true&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: YOUR_MYSQL_ROOT_PASSWORD
+
+pavti:
+  bootstrap:
+    # first platform admin: sign in with mobile 9000000000 and this password
+    admin-password: admin12345
