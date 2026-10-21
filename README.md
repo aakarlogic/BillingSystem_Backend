@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Pavti API (पावती) — Java Spring Boot backend
 
 Backend for the Pavti billing app. It has the same layers as the Health 360 C# backend
@@ -171,3 +172,6 @@ Excel upload, booking tokens, every Health 360 module (patients, doctors, labs �
 tokens, lockout after 5 wrong passwords, OTP sign-up, staff permission ticks, multi-business
 data separation (`business_id` always from the token), row locks for bill numbers and payments,
 Flyway migrations, Swagger, one place for errors (`GlobalExceptionHandler`).
+=======
+# BillingSystem_Backend
+>>>>>>> d4fe60034dc0c046ad2b190fae7d1aedb5bf7fb5
